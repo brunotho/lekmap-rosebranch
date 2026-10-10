@@ -10,6 +10,12 @@
 - Lua.log shows `Lekmap v6.2\LekmapTeamerMapLegacy.lua:672` errors: another Lekmap copy the user keeps on purpose
   for something else. Ignore it; do not delete it.
 
+## On dev, not released (2026-10-10)
+- **Strategic deposit sizes come from Lekmod** (`Resources.AmountMajor/AmountMinor`): `GetMajor/SmallStrategicResourceQuantityValues`
+  read them via `AssignStartingPlots.LekStrategicAmounts` (fallback: the old hardcoded values; resource settings keep their old
+  offsets, min 1). Lekmod v3 standard: iron 9/3, horse 6/2, coal 18/4, oil 18/8, aluminum 24/12, uranium 6/2. Start
+  normalization small horse/iron (was a hardcoded 2) uses the small amounts too. Log line `LekStrategicAmounts`.
+
 ## Shipped in 6.0.6 (all verified in logs over the user's test rolls)
 - **Inland seas count for start distance rules**: `AssignStartingPlots.LekBuildCoastTables` (called from `__Init`
   and after the center clear) marks land 1-2 from inland-sea water "next to coast" and 3 away "three from coast";

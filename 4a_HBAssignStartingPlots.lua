@@ -10753,13 +10753,17 @@ function AssignStartingPlots:AttemptToPlaceSmallStrategicAtPlot(x, y)
 			else
 				--print("Placed Horse.");
 			end
-			plot:SetResourceType(choice, 2);
-			AssignStartingPlots.LekStratAuditRecordHorseIron(self, choice, 2, plot, x, y);
-			self.amounts_of_resources_placed[choice + 1] = self.amounts_of_resources_placed[choice + 1] + 2;
+			-- Lekmod: small deposit sizes from Resources.AmountMinor (was 2 for both)
+			local _, horse_small, _, iron_small = self:GetSmallStrategicResourceQuantityValues();
+			local iAmount = (choice == self.iron_ID) and iron_small or horse_small;
+			plot:SetResourceType(choice, iAmount);
+			AssignStartingPlots.LekStratAuditRecordHorseIron(self, choice, iAmount, plot, x, y);
+			self.amounts_of_resources_placed[choice + 1] = self.amounts_of_resources_placed[choice + 1] + iAmount;
 		else -- Can't be horses.
-			plot:SetResourceType(self.iron_ID, 2);
-			AssignStartingPlots.LekStratAuditRecordHorseIron(self, self.iron_ID, 2, plot, x, y);
-			self.amounts_of_resources_placed[self.iron_ID + 1] = self.amounts_of_resources_placed[self.iron_ID + 1] + 2;
+			local _, _, _, iron_small = self:GetSmallStrategicResourceQuantityValues();
+			plot:SetResourceType(self.iron_ID, iron_small);
+			AssignStartingPlots.LekStratAuditRecordHorseIron(self, self.iron_ID, iron_small, plot, x, y);
+			self.amounts_of_resources_placed[self.iron_ID + 1] = self.amounts_of_resources_placed[self.iron_ID + 1] + iron_small;
 			--print("Placed Iron.");
 		end
 		return true
@@ -24251,33 +24255,53 @@ function AssignStartingPlots:PrintFinalResourceTotalsToLog()
 	print("-----------------------------------------------------");
 end
 ------------------------------------------------------------------------------
+-- Lekmod: strategic deposit sizes come from the game database (Resources.AmountMajor / AmountMinor), so the mod
+-- sets them in one place. Without those columns (other mods) the old hardcoded standard values are used.
+-- The resource settings keep their old offsets from the standard value (never below 1).
+function AssignStartingPlots.LekStrategicAmounts(sColumn, tFallback, tOffset)
+	local tTypes = {"RESOURCE_URANIUM", "RESOURCE_HORSE", "RESOURCE_OIL", "RESOURCE_IRON", "RESOURCE_COAL", "RESOURCE_ALUMINUM"};
+	local tAmounts = {};
+	for i, sType in ipairs(tTypes) do
+		local iAmount = tFallback[i];
+		local pResource = GameInfo.Resources[sType];
+		if pResource ~= nil and pResource[sColumn] ~= nil and pResource[sColumn] > 0 then
+			iAmount = pResource[sColumn];
+		end
+		tAmounts[i] = math.max(1, iAmount + tOffset[i]);
+	end
+	print("LekStrategicAmounts", sColumn, table.concat(tAmounts, ","));
+	return tAmounts[1], tAmounts[2], tAmounts[3], tAmounts[4], tAmounts[5], tAmounts[6];
+end
+------------------------------------------------------------------------------
 function AssignStartingPlots:GetMajorStrategicResourceQuantityValues()
 	-- This function determines quantity per tile for each strategic resource's major deposit size.
+	-- Order: uranium, horse, oil, iron, coal, aluminum. Standard values from Resources.AmountMajor (old: 2, 4, 7, 6, 7, 8).
 	-- Note: scripts that cannot place Oil in the sea need to increase amounts on land to compensate.
-	local uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt = 2, 4, 7, 6, 7, 8;
+	local tOffset = {0, 0, 0, 0, 0, 0};
 	-- Check the resource setting.
 	if self.resource_setting == 1 or self.resource_setting == 2 then -- Sparse
-		uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt = 2, 2, 5, 4, 5, 6;
+		tOffset = {0, -2, -2, -2, -2, -2};
 	elseif self.resource_setting == 3 then -- mediocre
-		uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt = 2, 3, 6, 5, 6, 7;
+		tOffset = {0, -1, -1, -1, -1, -1};
 	elseif self.resource_setting == 7 then -- plenty
-		uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt = 2, 5, 8, 7, 8, 9;
+		tOffset = {0, 1, 1, 1, 1, 1};
 	elseif self.resource_setting == 8 or self.resource_setting == 9 or self.resource_setting == 10 then -- Abundant
-		uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt = 2, 6, 9, 8, 9, 10;
+		tOffset = {0, 2, 2, 2, 2, 2};
 	end
-	return uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt
+	return AssignStartingPlots.LekStrategicAmounts("AmountMajor", {2, 4, 7, 6, 7, 8}, tOffset);
 end
 ------------------------------------------------------------------------------
 function AssignStartingPlots:GetSmallStrategicResourceQuantityValues()
 	-- This function determines quantity per tile for each strategic resource's small deposit size.
-	local uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt = 2, 2, 4, 2, 3, 3;
+	-- Order: uranium, horse, oil, iron, coal, aluminum. Standard values from Resources.AmountMinor (old: 2, 2, 4, 2, 3, 3).
+	local tOffset = {0, 0, 0, 0, 0, 0};
 	-- Check the resource setting.
 	if self.resource_setting == 1 or self.resource_setting == 2 or self.resource_setting == 3 then -- Sparse / Mediocre
-		uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt = 1, 1, 2, 1, 2, 2;
+		tOffset = {-1, -1, -2, -1, -1, -1};
 	elseif self.resource_setting == 7 or self.resource_setting == 8 or self.resource_setting == 9 or self.resource_setting == 10 then -- Plenty / Abundant
-		uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt = 2, 3, 3, 3, 3, 3;
+		tOffset = {0, 1, -1, 1, 0, 0};
 	end
-	return uran_amt, horse_amt, oil_amt, iron_amt, coal_amt, alum_amt
+	return AssignStartingPlots.LekStrategicAmounts("AmountMinor", {2, 2, 4, 2, 3, 3}, tOffset);
 end
 ------------------------------------------------------------------------------
 function AssignStartingPlots:PlaceStrategicAndBonusResources()
