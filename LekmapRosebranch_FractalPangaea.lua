@@ -42,7 +42,7 @@ function GetMapScriptInfo()
 	LekPipelineFlow("GetMapScriptInfo_call");
 	local world_age, temperature, rainfall, sea_level, resources = GetCoreMapOptions()
 	return {
-		Name = "[COLOR_PLAYER_PURPLE_TEXT]Lekmap Rosebranch 1.0.0 -- Fractal Pangaea[ENDCOLOR]",
+		Name = "[COLOR_PLAYER_PURPLE_TEXT]Lekmap Rosebranch 1.0.0[ENDCOLOR]",
 		Description = "Lekmap pangaea — fractal supercontinent with tectonic islands.",
 		IsAdvancedMap = false,
 		IconIndex = 0,

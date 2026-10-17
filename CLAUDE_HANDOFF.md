@@ -5,7 +5,9 @@
   (map 1.0.0 = 6.0.6 + the dev changes since). Lobby leaves: `LekmapRosebranch_FractalPangaea.lua`,
   `LekmapRosebranch_EquatorRing.lua` (were `LekmapPangaeaFractal.lua`, `Lekmap_EquatorRing.lua`).
 - The mod's Multiplayer > New Game picks the map by the file name `LekmapRosebranch_FractalPangaea.lua` only:
-  keep that name. Bump the version in VERSION, README and both map names (`Name =` in the leaves) together.
+  keep that name. Bump the version in VERSION, README and the map name (`Name =` in the leaf) together.
+- The map name is only `Lekmap Rosebranch 1.0.0` (the lobby drop-down cut off longer names). Equator Ring is parked as
+  `unused/LekmapRosebranch_EquatorRing.lua.off` (not fleshed out; user 2026-10-17); its Lekmap_*_EquatorRing support files stay.
 - 2026-10-17 on dev: fewer fish (`LEK_FISH_RING_FREQ = { 5.75, 11.5, 26 }`, the pre-6.0.5 total) and
   `LekRareResourceSpots` (15% of sugar/spices/deer move one tile to marsh / forest-jungle hill / open flat tundra;
   log `LekRareResourceSpots`). Not rolled in game yet.
