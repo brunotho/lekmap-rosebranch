@@ -52,7 +52,9 @@ _lek_strat_audit_log_each_hit = false;
 -- Fish: place mainland fish per coast ring (shore ring densest) instead of one even draw over the 3-ring band.
 -- Rates are "1 fish per N tiles" before the resource-setting multiplier (0.65 on default resources).
 LEK_FISH_RING_BIAS = true;
-LEK_FISH_RING_FREQ = { 3.5, 7, 16 }; -- shore ring, second ring, third ring
+-- 2026-10-17 (user: too many fish): the 2026-09-26 ring rates { 3.5, 7, 16 } gave about 64% more fish than the old even
+-- draw (1 per 10 tiles over all 3 rings); scaled back to that total, keeping the shore-heavy shape.
+LEK_FISH_RING_FREQ = { 5.75, 11.5, 26 }; -- shore ring, second ring, third ring
 -- Regional luxuries: max hex distance from the region's capital (placement, fallback and shortfall repair).
 LEK_REGIONAL_LUX_MAX_DIST = 6;
 -- Capitals keep this hex distance from the central volcano peak (natural wonder spacing).
