@@ -1,5 +1,15 @@
 # Claude handoff — 2026-09-30 (dev work after release 6.0.5)
 
+## Renamed 2026-10-17: Lekmap Rosebranch
+- User decision: the mod is now **Lekmod Rosebranch**, the map **Lekmap Rosebranch**, both numbered from **1.0.0**
+  (map 1.0.0 = 6.0.6 + the dev changes since). Lobby leaves: `LekmapRosebranch_FractalPangaea.lua`,
+  `LekmapRosebranch_EquatorRing.lua` (were `LekmapPangaeaFractal.lua`, `Lekmap_EquatorRing.lua`).
+- The mod's Multiplayer > New Game picks the map by the file name `LekmapRosebranch_FractalPangaea.lua` only:
+  keep that name. Bump the version in VERSION, README and both map names (`Name =` in the leaves) together.
+- 2026-10-17 on dev: fewer fish (`LEK_FISH_RING_FREQ = { 5.75, 11.5, 26 }`, the pre-6.0.5 total) and
+  `LekRareResourceSpots` (15% of sugar/spices/deer move one tile to marsh / forest-jungle hill / open flat tundra;
+  log `LekRareResourceSpots`). Not rolled in game yet.
+
 ## Where things stand
 - **6.0.6 is released** on `main` (GitHub brunotho/lekmap, changelog `Changelog_v6.0.6`), 2026-10-01. Release
   values there: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. `dev` = `main`.
