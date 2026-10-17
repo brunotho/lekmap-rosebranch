@@ -15,6 +15,14 @@
 - 2026-10-18 on dev: start ring 1 has no mountain that touches salt water (lakes don't count): such mountains become
   hills in `LekApplyStartRingsHillMountainPolicy` (after the 2-mountain cap; log `LekStartRingCoastMountain`). Not rolled yet.
 
+- 2026-10-18 on dev: **hard spacing rules** for Geometric Balance (`LekSpacingRulesPass`, called in the force-geometry sampler):
+  every capital's second-closest capital at most 15 tiles (`LEK_G6_S2_SECOND_NEAREST_MAX`), and at most 2 pairs exactly at the
+  minimum distance (Start Distance option; 11 for two ocean capitals) with no capital in both. Before this the sampler only
+  *minimized* the worst second-nearest and accepted anything (the s2 numbers of the relaxation phases were never applied in
+  force-geometry mode; the 6 phases only re-run the 1000-sample draw). Now: 6 phases x 1000 samples per map; no passing set =
+  map regeneration (`_lek_global_six_regen_max_layouts = 8`, `tuple_regen_on_solver_fail = true` in the pipeline); the 8th map
+  takes the best failed set (log `LekSpacingRules rules_failed accepted_best`). Logs `LekSpacingRules no_passing_set` per failed map.
+  Mapgen logs switched on in the Fractal leaf for testing. Not rolled yet.
 ## Where things stand
 - **6.0.6 is released** on `main` (GitHub brunotho/lekmap, changelog `Changelog_v6.0.6`), 2026-10-01. Release
   values there: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. `dev` = `main`.

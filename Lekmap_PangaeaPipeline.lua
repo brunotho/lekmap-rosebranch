@@ -4929,7 +4929,10 @@ function StartPlotSystem()
 		else
 			start_plot_database._lek_global_six_pace_fast = false;
 			start_plot_database._lek_global_six_fatal_on_exhausted = false;
-			start_plot_database._lek_global_six_regen_max_layouts = 1;
+			-- Lekmod spacing rules (2026-10-18): no passing set of capitals after all phases on a map = new map,
+			-- up to 8 maps; the 8th takes the best set seen (4a LekSpacingRulesPass)
+			start_plot_database._lek_global_six_regen_max_layouts = 8;
+			start_plot_database._lek_global_six_tuple_regen_on_solver_fail = true;
 			start_plot_database._lek_global_six_tuple_relax_min_layout = false;
 			start_plot_database._lek_global_six_tuple_minimal_s2_fallback_max_layout = false;
 			-- nil relaxation_phases → 4a LekGlobalSix_DefaultTupleRelaxationPhases()

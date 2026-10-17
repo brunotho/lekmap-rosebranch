@@ -8388,6 +8388,41 @@ function AssignStartingPlots:LekGlobalSix_ForceGeometryBiasFit(pack)
 	return true, bestScore, bestMax, "ok", bestAssign, coastalPids;
 end
 
+-- Lekmod spacing rules (user 2026-10-18), hard for accepting a set of six capitals:
+-- 1. every capital's second-closest other capital is at most LEK_G6_S2_SECOND_NEAREST_MAX (15) tiles away;
+-- 2. at most 2 pairs of capitals sit exactly at the minimum distance (Start Distance option, 11 for two ocean
+--    capitals), and no capital is in both pairs.
+-- A set that fails is kept as a fallback; RunTupleSearch only uses it on the last map layout.
+function AssignStartingPlots.LekSpacingRulesPass(self, pack, metrics, dMinPairOpt6)
+	if metrics == nil or metrics.maxD2 == nil then
+		return false, "no_metrics";
+	end
+	if metrics.maxD2 > LEK_G6_S2_SECOND_NEAREST_MAX then
+		return false, "secondNearest=" .. tostring(metrics.maxD2);
+	end
+	local minPairs = {};
+	for i = 1, 6 do
+		for j = i + 1, 6 do
+			local a, b = pack[i], pack[j];
+			local d = AssignStartingPlots.LekGlobalSix_PlotDistance(self, a[1], a[2], b[1], b[2]);
+			local req = AssignStartingPlots.LekGlobalSix_MinPairRequiredPlotDistForTuple(self, a[1], a[2], b[1], b[2], dMinPairOpt6);
+			if d ~= nil and req ~= nil and d <= req then
+				minPairs[#minPairs + 1] = { i, j };
+			end
+		end
+	end
+	if #minPairs > 2 then
+		return false, "minDistPairs=" .. tostring(#minPairs);
+	end
+	if #minPairs == 2 then
+		local p, q = minPairs[1], minPairs[2];
+		if p[1] == q[1] or p[1] == q[2] or p[2] == q[1] or p[2] == q[2] then
+			return false, "minDistPairsShareCapital";
+		end
+	end
+	return true, "ok";
+end
+
 function AssignStartingPlots:LekGlobalSix_ForceGeometryPackFromPools(byRegion, depthOrder)
 	local function isEngineSafeStartCandidate(c)
 		if c == nil or type(c.x) ~= "number" or type(c.y) ~= "number" then
@@ -8552,6 +8587,13 @@ function AssignStartingPlots:LekGlobalSix_ForceGeometryPackFromPools(byRegion, d
 	local bestPack = nil;
 	local bestMetrics = nil;
 	local feasibleSamples = 0;
+	local function betterThan(m, best)
+		return best == nil
+			or m.maxD2 < best.maxD2
+			or (m.maxD2 == best.maxD2 and m.minPair > best.minPair)
+			or (m.maxD2 == best.maxD2 and m.minPair == best.minPair and m.biasSoftScore > (best.biasSoftScore or -999999))
+			or (m.maxD2 == best.maxD2 and m.minPair == best.minPair and m.biasSoftScore == (best.biasSoftScore or -999999) and m.maxCenterDev < best.maxCenterDev);
+	end
 	for si = 1, sampleN do
 		local used = {};
 		local pack = {};
@@ -8586,14 +8628,19 @@ function AssignStartingPlots:LekGlobalSix_ForceGeometryPackFromPools(byRegion, d
 					m.samplesFeasible = feasibleSamples;
 					m.centerBandMin = bandMin;
 					m.centerBandMax = bandMax;
-				if bestMetrics == nil
-					or m.maxD2 < bestMetrics.maxD2
-					or (m.maxD2 == bestMetrics.maxD2 and m.minPair > bestMetrics.minPair)
-					or (m.maxD2 == bestMetrics.maxD2 and m.minPair == bestMetrics.minPair and m.biasSoftScore > (bestMetrics.biasSoftScore or -999999))
-					or (m.maxD2 == bestMetrics.maxD2 and m.minPair == bestMetrics.minPair and m.biasSoftScore == (bestMetrics.biasSoftScore or -999999) and m.maxCenterDev < bestMetrics.maxCenterDev)
-				then
-					bestMetrics = m;
-					bestPack = pack;
+				local spacingOk, spacingWhy = AssignStartingPlots.LekSpacingRulesPass(self, pack, m, dMinPairOpt6);
+				m.spacingWhy = spacingWhy;
+				if spacingOk then
+					if betterThan(m, bestMetrics) then
+						bestMetrics = m;
+						bestPack = pack;
+					end
+				else
+					self._lek_spacing_rejects = (self._lek_spacing_rejects or 0) + 1;
+					if betterThan(m, self._lek_spacing_fallback_metrics) then
+						self._lek_spacing_fallback_metrics = m;
+						self._lek_spacing_fallback_pack = pack;
+					end
 				end
 				end
 			end
@@ -9413,6 +9460,10 @@ function AssignStartingPlots:LekGlobalSix_RunTupleSearch()
 	self._lek_force_expected_pid_region = nil;
 	self._lek_force_expected_coastal_pids = nil;
 	self._lek_tuple_search_success_phase_name = nil;
+	-- Lekmod spacing rules: best set seen on this map that failed them (used on the last map layout only)
+	self._lek_spacing_fallback_pack = nil;
+	self._lek_spacing_fallback_metrics = nil;
+	self._lek_spacing_rejects = 0;
 	self._lek_tuple_search_success_phase_index = nil;
 	self._lek_g6_bias_policy = AssignStartingPlots.LekGlobalSix_BuildEffectiveBiasPolicy(self);
 
@@ -9793,6 +9844,41 @@ function AssignStartingPlots:LekGlobalSix_RunTupleSearch()
 	self._lek_g6_runtime_s1_min = nil;
 	self._lek_g6_runtime_s1_max = nil;
 	self._lek_g6_runtime_s2_max = nil;
+	-- Lekmod spacing rules: no set passed on this map. Earlier layouts regenerate the map (ChooseLocations);
+	-- the last layout takes the best set seen anyway.
+	do
+		local att = _lek_map_layout_attempt or 1;
+		local maxL = _lek_global_six_regen_max_layouts;
+		if type(maxL) ~= "number" or maxL < 1 then
+			maxL = 1;
+		end
+		local fb = self._lek_spacing_fallback_pack;
+		local fbm = self._lek_spacing_fallback_metrics;
+		LekPlacementProbeLog("### LekSpacingRules no_passing_set runId=" .. rid ..
+			" layout=" .. tostring(att) .. "/" .. tostring(maxL) ..
+			" rejects=" .. tostring(self._lek_spacing_rejects or 0) ..
+			" bestFailed=" .. tostring(fbm and fbm.spacingWhy or "none"));
+		if fb ~= nil and att >= maxL then
+			for r = 1, 6 do
+				local p = fb[r];
+				self.startingPlots[r] = { p[1], p[2], p[3] };
+				self:PlaceImpactAndRipples(p[1], p[2]);
+			end
+			self._lek_tuple_cause_gate = "force_geometry_only";
+			self._lek_tuple_cause_prune = "force_geometry_only";
+			self._lek_tuple_cause_leaf = "ok_spacing_rules_failed_last_layout";
+			self._lek_tuple_cause_combo = "na";
+			self._lek_force_expected_pid_region = fbm.biasAssignPidRegion;
+			self._lek_force_expected_coastal_pids = fbm.biasCoastalPids;
+			self._lek_tuple_search_success_phase_name = "spacing_rules_failed_last_layout";
+			self._lek_tuple_search_success_phase_index = 0;
+			LekPlacementProbeLog("### LekSpacingRules rules_failed accepted_best runId=" .. rid ..
+				" maxSecondNearest=" .. tostring(fbm.maxD2) ..
+				" minPair=" .. tostring(fbm.minPair) ..
+				" why=" .. tostring(fbm.spacingWhy));
+			return true, 0, 0, lastMaxF, nil;
+		end
+	end
 	if self._lek_tuple_cause_leaf == nil then
 		self._lek_tuple_cause_leaf = tostring(lastFailKind or "na");
 	end
