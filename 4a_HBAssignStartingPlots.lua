@@ -20256,6 +20256,62 @@ end
 ------------------------------------------------------------------------------
 -- Lekmap: sheep never sit under forest / jungle (e.g. island vegetation or Sinai desert tiles). Runs after
 -- all resources are placed; removes the feature, keeps the sheep.
+------------------------------------------------------------------------------
+-- Lekmap (2026-10-17): rare spots the placers never pick. A few sugar move one tile onto a free marsh, spices onto
+-- a forest/jungle hill, deer onto flat tundra without a feature. Counts stay the same (moves only); nothing within
+-- 3 tiles of a major start moves (start luxuries and start balance stay as placed).
+LEK_RARE_SPOT_PCT = 15;
+function AssignStartingPlots:LekRareResourceSpots()
+	local FOREST, JUNGLE, MARSH = FeatureTypes.FEATURE_FOREST, FeatureTypes.FEATURE_JUNGLE, FeatureTypes.FEATURE_MARSH;
+	local rules = {
+		{ id = self.sugar_ID, name = "sugar", fits = function(p) return p:GetFeatureType() == MARSH; end },
+		{ id = self.spices_ID, name = "spices", fits = function(p)
+			local ft = p:GetFeatureType();
+			return p:GetPlotType() == PlotTypes.PLOT_HILLS and (ft == FOREST or ft == JUNGLE);
+		end },
+		{ id = self.deer_ID, name = "deer", fits = function(p)
+			return p:GetPlotType() == PlotTypes.PLOT_LAND and p:GetTerrainType() == TerrainTypes.TERRAIN_TUNDRA
+				and p:GetFeatureType() == FeatureTypes.NO_FEATURE;
+		end },
+	};
+	local summary = {};
+	for _, rule in ipairs(rules) do
+		local moved = 0;
+		if type(rule.id) == "number" and rule.id >= 0 then
+			local sources = {};
+			for k = 0, Map.GetNumPlots() - 1 do
+				local p = Map.GetPlotByIndex(k);
+				if p:GetResourceType(-1) == rule.id and not rule.fits(p) then
+					sources[#sources + 1] = p;
+				end
+			end
+			for _, src in ipairs(sources) do
+				if Map.Rand(100, "LekRareResourceSpots - Lua") < LEK_RARE_SPOT_PCT
+					and self:LekStratMinDistanceToAnyMajorStart(src:GetX(), src:GetY()) > 3 then
+					local cands = {};
+					for d = 0, 5 do
+						local q = Map.PlotDirection(src:GetX(), src:GetY(), d);
+						if q and not q:IsWater() and not q:IsCity() and q:GetResourceType(-1) == -1
+							and not LekPlotIsNaturalWonder(q) and rule.fits(q) and q:CanHaveResource(rule.id, false)
+							and self:LekStratMinDistanceToAnyMajorStart(q:GetX(), q:GetY()) > 3 then
+							cands[#cands + 1] = q;
+						end
+					end
+					if #cands > 0 then
+						local dst = cands[1 + Map.Rand(#cands, "LekRareResourceSpots pick - Lua")];
+						local n = src:GetNumResource();
+						src:SetResourceType(-1);
+						dst:SetResourceType(rule.id, math.max(1, n));
+						moved = moved + 1;
+					end
+				end
+			end
+		end
+		summary[#summary + 1] = rule.name .. "=" .. moved;
+	end
+	if LekLandStatsLog then LekLandStatsLog("### LekRareResourceSpots " .. table.concat(summary, " ")); end
+end
+------------------------------------------------------------------------------
 function LekClearFeaturesOnSheep()
 	local sheep = GameInfo.Resources["RESOURCE_SHEEP"];
 	if not sheep then return; end
@@ -25175,6 +25231,12 @@ function AssignStartingPlots:PlaceResourcesAndCityStates()
 	end
 
 	pcall(LekClearFeaturesOnSheep);
+	do
+		local ok, err = pcall(function() self:LekRareResourceSpots(); end);
+		if not ok then
+			LekMapgenDiagLogAppend("### PlaceResources_err stage=LekRareResourceSpots err=" .. tostring(err));
+		end
+	end
 
 	-- Safety net: no resource may sit on a natural wonder tile (some placers ignore the impact layers).
 	do
