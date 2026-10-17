@@ -40,7 +40,7 @@ function GetMapScriptInfo()
 	LekPipelineFlow("GetMapScriptInfo_call");
 	local world_age, temperature, rainfall, sea_level, resources = GetCoreMapOptions()
 	return {
-		Name = "[COLOR_PLAYER_PURPLE_TEXT]Lekmap 6.0.6 -- Equator Ring[ENDCOLOR]",
+		Name = "[COLOR_PLAYER_PURPLE_TEXT]Lekmap Rosebranch 1.0.0 -- Equator Ring[ENDCOLOR]",
 		Description = "Lekmap pangaea — land belt wrapping the equator with open polar oceans.",
 		IsAdvancedMap = false,
 		IconIndex = 0,

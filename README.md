@@ -1,13 +1,15 @@
-# Lekmap 6.0.6
+# Lekmap Rosebranch 1.0.0
 
-Civ5 map scripts: **Fractal Pangaea** + **Equator Ring**.
+Civ5 map scripts for Lekmod Rosebranch: **Fractal Pangaea** + **Equator Ring**.
+Lekmap Rosebranch continues Lekmap 6.0.6 under its own name and numbering (1.0.0 = 6.0.6 + the changes since).
 
 ## Install
 
 1. Copy this repo folder into:
    `…/Civilization V/…/Assets/Maps/`
-2. Rename the folder to **`Lekmap 6.0.6`** (so the Maps list / disk path shows the version).
-3. In Advanced Setup, pick `Lekmap 6.0.6 -- Fractal Pangaea` or `… -- Equator Ring`.
+2. Any folder name works. Lekmod Rosebranch's Multiplayer > New Game finds the map by its file name
+   (`LekmapRosebranch_FractalPangaea.lua`), so keep the file names.
+3. In Advanced Setup, pick `Lekmap Rosebranch 1.0.0 -- Fractal Pangaea` or `… -- Equator Ring`.
 
 Changelog notes: `Changelog_v6.0.6` (latest), `Changelog_v6.0.5`, `Changelog_v6.0.4`, `Changelog_v6.0.1` · Notion: see previous README link.
 

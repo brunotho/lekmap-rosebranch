@@ -47,7 +47,7 @@
 
 ## Resuming test work
 1. Work on `dev` (`git checkout dev`); commit locally, push only when the user asks. This folder is the game's live copy, so the checked-out branch is what loads.
-2. Set `_lek_mapgen_logs = true` in `LekmapPangaeaFractal.lua` and `Lekmap_EquatorRing.lua`.
+2. Set `_lek_mapgen_logs = true` in `LekmapRosebranch_FractalPangaea.lua` and `LekmapRosebranch_EquatorRing.lua`.
 3. To look at the central volcano, temporarily raise `LEK_CENTRAL_VOLCANO_CHANCE` (release value 5).
 4. User tests by rolling Small maps with default settings (mostly Fractal Pangaea) and reports tile coordinates.
    Answer from `Logs/LekmapIslandMap.log` (always the map currently open; check its timestamp — a release build

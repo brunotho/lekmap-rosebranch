@@ -19,8 +19,8 @@ Lekmap's own files go to the same Logs folder (path helper: LekCiv5LogPath in Le
   LekmapLandStats.log        ### LekLandStats / LekInlandSea*, file only, appended across rolls
                              (both maps; LekInlandSea* Fractal Pangaea only; channel landstats)
 
-ONE SWITCH: _lek_mapgen_logs at the top of each lobby leaf (LekmapPangaeaFractal.lua /
-Lekmap_EquatorRing.lua). false = release, nothing written; true = testing. The flow log follows it.
+ONE SWITCH: _lek_mapgen_logs at the top of each lobby leaf (LekmapRosebranch_FractalPangaea.lua /
+LekmapRosebranch_EquatorRing.lua). false = release, nothing written; true = testing. The flow log follows it.
 
 If the game's Lua has no io library, or Documents is redirected (e.g. OneDrive), the files stay empty.
 
@@ -38,7 +38,7 @@ Last stage before a hard close is where it died.
 
 Verbosity & log channels (source of truth)
 -----------------------------------------
-Edit log knobs on the lobby leaf (LekmapPangaeaFractal.lua / Lekmap_EquatorRing.lua)
+Edit log knobs on the lobby leaf (LekmapRosebranch_FractalPangaea.lua / LekmapRosebranch_EquatorRing.lua)
 or defaults in Lekmap_PangaeaPipeline.lua:
 
   _lek_mapgen_logs = false/true     -- MASTER: false = soft deploy quiet
