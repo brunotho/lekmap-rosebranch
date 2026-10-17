@@ -12,6 +12,9 @@
   `LekRareResourceSpots` (15% of sugar/spices/deer move one tile to marsh / forest-jungle hill / open flat tundra;
   log `LekRareResourceSpots`). Not rolled in game yet.
 
+- 2026-10-18 on dev: start ring 1 has no mountain that touches salt water (lakes don't count): such mountains become
+  hills in `LekApplyStartRingsHillMountainPolicy` (after the 2-mountain cap; log `LekStartRingCoastMountain`). Not rolled yet.
+
 ## Where things stand
 - **6.0.6 is released** on `main` (GitHub brunotho/lekmap, changelog `Changelog_v6.0.6`), 2026-10-01. Release
   values there: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. `dev` = `main`.

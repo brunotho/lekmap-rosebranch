@@ -11360,6 +11360,31 @@ function AssignStartingPlots:LekApplyStartRingsHillMountainPolicy(x, y)
 		nMtn = nMtn - 1;
 		nHill = nHill + 1;
 	end
+	-- Lekmod (user 2026-10-18): no mountain next to the start tile may also touch salt water (lakes don't count);
+	-- such mountains become hills.
+	local nCoastMtn = 0;
+	for _, adj in ipairs(ringAdj[1]) do
+		local sx, sy = self:ApplyHexAdjustment(x, y, adj);
+		if sx >= 0 and sx < iW and sy >= 0 and sy < iH then
+			local p = Map.GetPlot(sx, sy);
+			if p and not isNWPlot(p) and p:GetPlotType() == PlotTypes.PLOT_MOUNTAIN then
+				local bTouchesSea = false;
+				for dir = 0, 5 do
+					local np = Map.PlotDirection(sx, sy, dir);
+					if np and np:IsWater() and not np:IsLake() then
+						bTouchesSea = true;
+					end
+				end
+				if bTouchesSea then
+					p:SetPlotType(PlotTypes.PLOT_HILLS, false, true);
+					nCoastMtn = nCoastMtn + 1;
+				end
+			end
+		end
+	end
+	if nCoastMtn > 0 then
+		LekPlacementProbeLog("### LekStartRingCoastMountain xy=" .. x .. "," .. y .. " toHills=" .. nCoastMtn);
+	end
 	nHill, nMtn, mtns, flats = classify();
 	for i = #flats, 2, -1 do
 		local j = 1 + Map.Rand(i, "LekStartRingHill");
