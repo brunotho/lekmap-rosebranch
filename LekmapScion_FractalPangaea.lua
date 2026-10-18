@@ -52,7 +52,7 @@ function GetMapScriptInfo()
 			{
 				Name = "[COLOR_PLAYER_PURPLE_TEXT]Coastal Spawns[ENDCOLOR]",
 				Values = {
-					"[COLOR_PLAYER_PURPLE_TEXT][ICON_CAPITAL]Coastal Civs Only[ENDCOLOR]",
+					"[COLOR_PLAYER_PURPLE_TEXT]Coastal Civs Only[ENDCOLOR]",
 					"[COLOR_PLAYER_PURPLE_TEXT]Force 2 Coastals[ENDCOLOR]",
 					"[COLOR_PLAYER_PURPLE_TEXT]All Inland[ENDCOLOR]",
 					"[COLOR_PLAYER_PURPLE_TEXT]Pure Random[ENDCOLOR]",
