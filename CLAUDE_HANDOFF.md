@@ -24,17 +24,14 @@
   takes the best failed set (log `LekSpacingRules rules_failed accepted_best`). Logs `LekSpacingRules no_passing_set` per failed map.
   Rolled by the user 2026-10-18 without visible problems. Logs (and the "starts" channel) switched off again for release 1.0.0.
 
-- **Release 1.0.0 (2026-10-18): prepared, not published.** `04f1de1` is the release commit; the zip is built by the mod repo's
-  `tools/release.py package 1.0.0` (`civ-tools\lek\dist\Lekmap Rosebranch 1.0.0.zip`, dev files excluded). `dev` is not pushed yet
-  (the push was blocked by Claude Code's permission check). Steps and exact commands: mod repo `CLAUDE.md` §9 "Release 1.0.0".
-  The GitHub release goes on `brunotho/lekmap-rosebranch`, tag `v1.0.0`, `--target 04f1de1b8de8864d970f20b5e9b6a63c5e6ddd5d`.
-  The mod website reads this repo's `CHANGELOG.txt` from branch `dev`.
+- **Release 1.0.0 published 2026-10-18**: GitHub release `v1.0.0` on `brunotho/lekmap-rosebranch` (target `04f1de1`, zip
+  built by the mod repo's `tools/release.py package`). `dev` pushed. The mod website reads this repo's `CHANGELOG.txt` from `dev`.
 ## Where things stand
-- **6.0.6 is released** on `main` (GitHub brunotho/lekmap, changelog `Changelog_v6.0.6`), 2026-10-01. Release
-  values there: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. `dev` = `main`.
-- Before new test work on `dev`, turn the logs back on (see "Resuming test work").
-- Verified before release: ~16 rolls (both maps), no visual issues, no Lekmap errors, `LekNWResourceSweep cleared=0`
-  on all rolls after the fix.
+- **Latest release: Lekmap Rosebranch 1.0.0** (tag `v1.0.0`, commit `04f1de1`, on `dev`; `main` still holds 6.0.6).
+  Release values: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. Untested in game at release: fewer fish, rare resource
+  spots, ring-1 coastal mountains to hills (the user found the maps "alright").
+- Before new test work on `dev`, turn the logs back on (see "Resuming test work"), and off again before a release.
+- 6.0.6 (2026-10-01, old repo name brunotho/lekmap) was verified over ~16 rolls; `LekNWResourceSweep cleared=0`.
 - Branches `mapgen-tuning` and `origin/release/v5.3-testing` were deleted (v5.3 snapshot commit: `27c6a13`).
 - Lua.log shows `Lekmap v6.2\LekmapTeamerMapLegacy.lua:672` errors: another Lekmap copy the user keeps on purpose
   for something else. Ignore it; do not delete it.
