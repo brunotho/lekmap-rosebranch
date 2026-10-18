@@ -12,6 +12,6 @@ Lekmap Rosebranch continues Lekmap 6.0.6 under its own name and numbering (1.0.0
    (`LekmapRosebranch_FractalPangaea.lua`), so keep the file names.
 3. In Advanced Setup, pick `Lekmap Rosebranch 1.0.0`.
 
-Changelog notes: `Changelog_v6.0.6` (latest), `Changelog_v6.0.5`, `Changelog_v6.0.4`, `Changelog_v6.0.1` · Notion: see previous README link.
+Changelog: `CHANGELOG.txt` (compared with Lekmap 5.2; shown on the Lekmod Rosebranch website). Older notes: `Changelog_v6.0.*`.
 
 https://app.notion.com/p/Map-Changelog-public-3a5a5c16314480528ea6d9ce17f14f44

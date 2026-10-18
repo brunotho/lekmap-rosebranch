@@ -1,0 +1,33 @@
+# Lekmap Rosebranch 1.0.0 (compared with Lekmap 5.2)
+
+## Start placement
+- The setting "Starting Locations":
+	- "Geometric Balance" (default) uses a slower process that evens out the distances between players: no extreme isolation, no extreme center spawns, and a nudge towards every player having two neighbours at a medium distance.
+	- Every capital's second-closest neighbour is at most 15 tiles away, and at most 2 pairs of capitals sit at the minimum distance (no capital in both). If a map can't fit that, a new map is generated (up to 8 times).
+	- "Legacy" places players like map version 5.2 and finishes map generation much faster. With the other changes to the map this can end up with a worse distribution than 5.2 had.
+- Inland spawns have at most 4 salt-water tiles within 4 tiles.
+- Coastal spawns get a minimum amount of land close by (possibly as islands), and coastal players keep a larger minimum distance to each other than the default.
+- Coastal capitals have no water or mountains in the center-facing half of their first two rings.
+- Inland seas count for the start distance rules: capitals stay 4+ tiles from them, city-states never 1-2 tiles.
+- No mountain next to a capital touches salt water (such mountains become hills).
+- At least 1 city-state is close-ish to each player.
+- City-state spots are better: no tiny land protrusions when coastal, fresh water where possible, extra strategic resources for city-states in the center of the map.
+
+## Map shape and islands
+- The map uses a taller aspect ratio, so the pangaea is less elongated.
+- Islands keep exactly one water tile to the mainland and two to each other; a few rare island types may touch the mainland.
+- Sea stacks along the coast are less regular.
+
+## Resources
+- Regional luxuries have a maximum distance to the capital; inland regionals try to avoid islands (not guaranteed); coastal spawns may get an inland regional.
+- Luxuries no longer spawn on flat desert. Flat desert also counts as junk for desert regions, so capitals have less extreme amounts of it.
+- Luxury variety: a city-state shares its luxury with at most 1 of its 5 nearest city-states, and random luxuries avoid spots where 2+ of the 6 nearest luxuries are the same type.
+- Amber only comes in clusters near salt water, usually under forest or jungle.
+- Strategic resources are spread more evenly across the map; the guaranteed capital strategics are spread a bit more across the nearby land. Deposit sizes come from the mod.
+- No resources on natural wonder tiles.
+- Fewer fish.
+- Some sugar, spices and deer move to the terrain they fit (marsh, forested hills, open tundra).
+
+## Notes
+- The design and all testing were done on Small maps with 6 players; on other sizes odd things may happen.
+- Various other terrain and resource adjustments.
