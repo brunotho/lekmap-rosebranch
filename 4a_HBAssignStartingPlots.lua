@@ -71,7 +71,8 @@ function LekMapgenInferChannel(msg)
 	if string.find(s, "LekGlobalSix", 1, true)
 		or string.find(s, "ChooseLocations", 1, true)
 		or string.find(s, "StartSpacing", 1, true)
-		or string.find(s, "forceGeom", 1, true) then
+		or string.find(s, "forceGeom", 1, true)
+		or string.find(s, "LekSpacingRules", 1, true) then
 		return "starts";
 	end
 	return "other";
@@ -9854,7 +9855,7 @@ function AssignStartingPlots:LekGlobalSix_RunTupleSearch()
 		end
 		local fb = self._lek_spacing_fallback_pack;
 		local fbm = self._lek_spacing_fallback_metrics;
-		LekPlacementProbeLog("### LekSpacingRules no_passing_set runId=" .. rid ..
+		LekPlacementProbeAt(1, "### LekSpacingRules no_passing_set runId=" .. rid ..
 			" layout=" .. tostring(att) .. "/" .. tostring(maxL) ..
 			" rejects=" .. tostring(self._lek_spacing_rejects or 0) ..
 			" bestFailed=" .. tostring(fbm and fbm.spacingWhy or "none"));
@@ -9872,7 +9873,7 @@ function AssignStartingPlots:LekGlobalSix_RunTupleSearch()
 			self._lek_force_expected_coastal_pids = fbm.biasCoastalPids;
 			self._lek_tuple_search_success_phase_name = "spacing_rules_failed_last_layout";
 			self._lek_tuple_search_success_phase_index = 0;
-			LekPlacementProbeLog("### LekSpacingRules rules_failed accepted_best runId=" .. rid ..
+			LekPlacementProbeAt(1, "### LekSpacingRules rules_failed accepted_best runId=" .. rid ..
 				" maxSecondNearest=" .. tostring(fbm.maxD2) ..
 				" minPair=" .. tostring(fbm.minPair) ..
 				" why=" .. tostring(fbm.spacingWhy));

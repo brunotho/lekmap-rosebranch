@@ -13,7 +13,7 @@ _lek_mapgen_log_channels = {
 	-- ### LekIslandMap: island type per tile, per map -> Logs/LekmapIslandMap.log.
 	islandmap = true,
 	strategics = false,
-	starts = false,
+	starts = true,
 	mapgen = false,
 	pangaea = false,
 	bench = false,
