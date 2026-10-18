@@ -25,10 +25,10 @@
   takes the best failed set (log `LekSpacingRules rules_failed accepted_best`). Logs `LekSpacingRules no_passing_set` per failed map.
   Rolled by the user 2026-10-18 without visible problems. Logs (and the "starts" channel) switched off again for release 1.0.0.
 
-- **Release 1.0.0 published 2026-10-18**: GitHub release `v1.0.0` on `brunotho/lekmap-scion` (target `04f1de1`, zip
+- **Release 1.0.0 published 2026-10-18**: GitHub release `v1.0.0` on `brunotho/lekmap-scion` (re-published as Scion, target `b15d0c5`, zip
   built by the mod repo's `tools/release.py package`). `dev` pushed. The mod website reads this repo's `CHANGELOG.txt` from `dev`.
 ## Where things stand
-- **Latest release: Lekmap Scion 1.0.0** (tag `v1.0.0`, commit `04f1de1`, on `dev`; `main` still holds 6.0.6).
+- **Latest release: Lekmap Scion 1.0.0** (tag `v1.0.0`, commit `b15d0c5`, on `dev`; `main` still holds 6.0.6).
   Release values: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. Untested in game at release: fewer fish, rare resource
   spots, ring-1 coastal mountains to hills (the user found the maps "alright").
 - Before new test work on `dev`, turn the logs back on (see "Resuming test work"), and off again before a release.
