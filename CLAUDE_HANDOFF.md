@@ -1,13 +1,14 @@
 # Claude handoff — 2026-09-30 (dev work after release 6.0.5)
 
-## Renamed 2026-10-17: Lekmap Rosebranch
-- User decision: the mod is now **Lekmod Rosebranch**, the map **Lekmap Rosebranch**, both numbered from **1.0.0**
-  (map 1.0.0 = 6.0.6 + the dev changes since). Lobby leaves: `LekmapRosebranch_FractalPangaea.lua`,
-  `LekmapRosebranch_EquatorRing.lua` (were `LekmapPangaeaFractal.lua`, `Lekmap_EquatorRing.lua`).
-- The mod's Multiplayer > New Game picks the map by the file name `LekmapRosebranch_FractalPangaea.lua` only:
+## Renamed 2026-10-18: Lekmap Scion (was Lekmap Rosebranch from 2026-10-17)
+- User decision: the mod is now **Lekmod Scion**, the map **Lekmap Scion**, both numbered from **1.0.0**
+  (repos `brunotho/Lekmod-Scion`, `brunotho/lekmap-scion`; the Rosebranch v1.0.0 releases were re-published as Scion)
+  (map 1.0.0 = 6.0.6 + the dev changes since). Lobby leaves: `LekmapScion_FractalPangaea.lua`,
+  `LekmapScion_EquatorRing.lua` (were `LekmapPangaeaFractal.lua`, `Lekmap_EquatorRing.lua`).
+- The mod's Multiplayer > New Game picks the map by the file name `LekmapScion_FractalPangaea.lua` only:
   keep that name. Bump the version in VERSION, README and the map name (`Name =` in the leaf) together.
-- The map name is only `Lekmap Rosebranch 1.0.0` (the lobby drop-down cut off longer names). Equator Ring is parked as
-  `unused/LekmapRosebranch_EquatorRing.lua.off` (not fleshed out; user 2026-10-17); its Lekmap_*_EquatorRing support files stay.
+- The map name is only `Lekmap Scion 1.0.0` (the lobby drop-down cut off longer names). Equator Ring is parked as
+  `unused/LekmapScion_EquatorRing.lua.off` (not fleshed out; user 2026-10-17); its Lekmap_*_EquatorRing support files stay.
 - 2026-10-17 on dev: fewer fish (`LEK_FISH_RING_FREQ = { 5.75, 11.5, 26 }`, the pre-6.0.5 total) and
   `LekRareResourceSpots` (15% of sugar/spices/deer move one tile to marsh / forest-jungle hill / open flat tundra;
   log `LekRareResourceSpots`). Not rolled in game yet.
@@ -24,10 +25,10 @@
   takes the best failed set (log `LekSpacingRules rules_failed accepted_best`). Logs `LekSpacingRules no_passing_set` per failed map.
   Rolled by the user 2026-10-18 without visible problems. Logs (and the "starts" channel) switched off again for release 1.0.0.
 
-- **Release 1.0.0 published 2026-10-18**: GitHub release `v1.0.0` on `brunotho/lekmap-rosebranch` (target `04f1de1`, zip
+- **Release 1.0.0 published 2026-10-18**: GitHub release `v1.0.0` on `brunotho/lekmap-scion` (target `04f1de1`, zip
   built by the mod repo's `tools/release.py package`). `dev` pushed. The mod website reads this repo's `CHANGELOG.txt` from `dev`.
 ## Where things stand
-- **Latest release: Lekmap Rosebranch 1.0.0** (tag `v1.0.0`, commit `04f1de1`, on `dev`; `main` still holds 6.0.6).
+- **Latest release: Lekmap Scion 1.0.0** (tag `v1.0.0`, commit `04f1de1`, on `dev`; `main` still holds 6.0.6).
   Release values: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. Untested in game at release: fewer fish, rare resource
   spots, ring-1 coastal mountains to hills (the user found the maps "alright").
 - Before new test work on `dev`, turn the logs back on (see "Resuming test work"), and off again before a release.
@@ -73,7 +74,7 @@
 
 ## Resuming test work
 1. Work on `dev` (`git checkout dev`); commit locally, push only when the user asks. This folder is the game's live copy, so the checked-out branch is what loads.
-2. Set `_lek_mapgen_logs = true` in `LekmapRosebranch_FractalPangaea.lua` and `LekmapRosebranch_EquatorRing.lua`.
+2. Set `_lek_mapgen_logs = true` in `LekmapScion_FractalPangaea.lua` and `LekmapScion_EquatorRing.lua`.
 3. To look at the central volcano, temporarily raise `LEK_CENTRAL_VOLCANO_CHANCE` (release value 5).
 4. User tests by rolling Small maps with default settings (mostly Fractal Pangaea) and reports tile coordinates.
    Answer from `Logs/LekmapIslandMap.log` (always the map currently open; check its timestamp — a release build
