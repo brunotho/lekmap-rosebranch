@@ -16,17 +16,12 @@
 ## Map shape and islands
 - The map uses a taller aspect ratio, so the pangaea is less elongated.
 - Islands keep exactly one water tile to the mainland and two to each other; a few rare island types may touch the mainland.
-- Sea stacks along the coast are less regular.
 
 ## Resources
 - Regional luxuries have a maximum distance to the capital; inland regionals try to avoid islands (not guaranteed); coastal spawns may get an inland regional.
 - Luxuries no longer spawn on flat desert. Flat desert also counts as junk for desert regions, so capitals have less extreme amounts of it.
 - Luxury variety: a city-state shares its luxury with at most 1 of its 5 nearest city-states, and random luxuries avoid spots where 2+ of the 6 nearest luxuries are the same type.
-- Amber only comes in clusters near salt water, usually under forest or jungle.
 - Strategic resources are spread more evenly across the map; the guaranteed capital strategics are spread a bit more across the nearby land. Deposit sizes come from the mod.
-- No resources on natural wonder tiles.
-- Fewer fish.
-- Some sugar, spices and deer move to the terrain they fit (marsh, forested hills, open tundra).
 
 ## Notes
 - The design and all testing were done on Small maps with 6 players; on other sizes odd things may happen.
