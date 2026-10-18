@@ -86,7 +86,7 @@
   judged it there yet — may need to be skipped on the ring's long east-west chains.
 - A very large unexplained island was seen once at 3/22 on a release map (no logs). Best guess: wrap soft
   land bridge (x=3 is next to the wrap seam). User said a one-off is fine.
-- Rework candidates: `wrapSoftLandbridge` (can look like rubble on the seam), `splinteredCliffs` (thin snake).
+- Rework candidates: `wrapSoftLandbridge` (can look like rubble on the seam), 2026-10-18 seen at 43 tiles (main piece 25, 6 on the mainland) around 0/12; user: leave it for now, `splinteredCliffs` (thin snake).
   Unbuilt idea: no islands in narrow straits (except connectors).
 
 ## Island system in one paragraph
