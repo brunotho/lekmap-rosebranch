@@ -22,7 +22,7 @@
   force-geometry mode; the 6 phases only re-run the 1000-sample draw). Now: 6 phases x 1000 samples per map; no passing set =
   map regeneration (`_lek_global_six_regen_max_layouts = 8`, `tuple_regen_on_solver_fail = true` in the pipeline); the 8th map
   takes the best failed set (log `LekSpacingRules rules_failed accepted_best`). Logs `LekSpacingRules no_passing_set` per failed map.
-  Mapgen logs switched on in the Fractal leaf for testing. Not rolled yet.
+  Rolled by the user 2026-10-18 without visible problems. Logs (and the "starts" channel) switched off again for release 1.0.0.
 ## Where things stand
 - **6.0.6 is released** on `main` (GitHub brunotho/lekmap, changelog `Changelog_v6.0.6`), 2026-10-01. Release
   values there: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. `dev` = `main`.
