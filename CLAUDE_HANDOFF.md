@@ -23,6 +23,12 @@
   map regeneration (`_lek_global_six_regen_max_layouts = 8`, `tuple_regen_on_solver_fail = true` in the pipeline); the 8th map
   takes the best failed set (log `LekSpacingRules rules_failed accepted_best`). Logs `LekSpacingRules no_passing_set` per failed map.
   Rolled by the user 2026-10-18 without visible problems. Logs (and the "starts" channel) switched off again for release 1.0.0.
+
+- **Release 1.0.0 (2026-10-18): prepared, not published.** `04f1de1` is the release commit; the zip is built by the mod repo's
+  `tools/release.py package 1.0.0` (`civ-tools\lek\dist\Lekmap Rosebranch 1.0.0.zip`, dev files excluded). `dev` is not pushed yet
+  (the push was blocked by Claude Code's permission check). Steps and exact commands: mod repo `CLAUDE.md` §9 "Release 1.0.0".
+  The GitHub release goes on `brunotho/lekmap-rosebranch`, tag `v1.0.0`, `--target 04f1de1b8de8864d970f20b5e9b6a63c5e6ddd5d`.
+  The mod website reads this repo's `CHANGELOG.txt` from branch `dev`.
 ## Where things stand
 - **6.0.6 is released** on `main` (GitHub brunotho/lekmap, changelog `Changelog_v6.0.6`), 2026-10-01. Release
   values there: logs off, `LEK_CENTRAL_VOLCANO_CHANCE = 5`. `dev` = `main`.
