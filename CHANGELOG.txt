@@ -1,10 +1,8 @@
 # Lekmap Scion 1.0.0 (compared with Lekmap 5.2)
 
 ## Start placement
-- The setting "Starting Locations":
-	- "Geometric Balance" (default) uses a slower process that evens out the distances between players: no extreme isolation, no extreme center spawns, and a nudge towards every player having two neighbours at a medium distance.
-	- Every capital's second-closest neighbour is at most 15 tiles away, and at most 2 pairs of capitals sit at the minimum distance (no capital in both). If a map can't fit that, a new map is generated (up to 8 times).
-	- "Legacy" places players like map version 5.2 and finishes map generation much faster. With the other changes to the map this can end up with a worse distribution than 5.2 had.
+- Players are placed by a slower process that evens out the distances between them: no extreme isolation, no extreme center spawns, and a nudge towards every player having two neighbours at a medium distance.
+- Every capital's second-closest neighbour is at most 15 tiles away, and at most 2 pairs of capitals sit at the minimum distance (no capital in both). If a map can't fit that, a new map is generated (up to 8 times).
 - Inland spawns have at most 4 salt-water tiles within 4 tiles.
 - Coastal spawns get a minimum amount of land close by (possibly as islands), and coastal players keep a larger minimum distance to each other than the default.
 - Coastal capitals have no water or mountains in the center-facing half of their first two rings.
@@ -15,7 +13,7 @@
 
 ## Map shape and islands
 - The map uses a taller aspect ratio, so the pangaea is less elongated.
-- Islands keep exactly one water tile to the mainland and two to each other; a few rare island types may touch the mainland.
+- Islands are reworked: a more balanced distribution, closer to the mainland.
 
 ## Resources
 - Regional luxuries have a maximum distance to the capital; inland regionals try to avoid islands (not guaranteed); coastal spawns may get an inland regional.
