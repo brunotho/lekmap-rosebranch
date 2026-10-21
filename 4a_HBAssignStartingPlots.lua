@@ -20454,8 +20454,8 @@ LEK_AMBER_CLUSTER_SIZE_PCT = { 50, 35, 15 };	-- odds of 1 / 2 / 3 ambers per loc
 LEK_AMBER_MAX_LOCATIONS = 3;					-- 1..3 locations, equally likely
 LEK_AMBER_MIN_LOCATION_DIST = 8;
 LEK_AMBER_MAX_SALT_DIST = 3;					-- land within 3 tiles of salt water (ocean or inland sea, not lakes)
-LEK_AMBER_TREE_PCT = 75;						-- featureless tile gets jungle (tropics) or forest
-LEK_AMBER_JUNGLE_LAT = 0.3;						-- |latitude| below this (0 = equator, 1 = pole) -> jungle
+LEK_AMBER_TREE_PCT = 75;						-- featureless tile gets jungle (next to existing jungle) or forest
+LEK_AMBER_JUNGLE_RANGE = 2;						-- jungle only with a jungle tile within this many tiles (2026-10-22: a latitude rule put jungle far outside the jungle band)
 
 -- Amber: 1-3 locations near salt water, each 1-3 ambers within 2 tiles of each other, often under trees.
 -- Returns the placed tiles { {x, y}, ... }.
@@ -20509,9 +20509,19 @@ function AssignStartingPlots.LekPlaceAmberClusters(self)
 	local function addTrees(p)
 		if p:GetFeatureType() ~= FeatureTypes.NO_FEATURE then return; end
 		if Map.Rand(100, "Lek amber trees") >= LEK_AMBER_TREE_PCT then return; end
-		local lat = math.abs(p:GetY() - (iH - 1) / 2) / ((iH - 1) / 2);
 		local tt = p:GetTerrainType();
-		if lat < LEK_AMBER_JUNGLE_LAT and (tt == TerrainTypes.TERRAIN_GRASS or tt == TerrainTypes.TERRAIN_PLAINS) then
+		local nearJungle = false;
+		local px, py = p:GetX(), p:GetY();
+		for dy = -LEK_AMBER_JUNGLE_RANGE, LEK_AMBER_JUNGLE_RANGE do
+			for dx = -LEK_AMBER_JUNGLE_RANGE - 1, LEK_AMBER_JUNGLE_RANGE + 1 do
+				local q = Map.GetPlot(px + dx, py + dy);
+				if q ~= nil and q:GetFeatureType() == FeatureTypes.FEATURE_JUNGLE
+					and Map.PlotDistance(px, py, q:GetX(), q:GetY()) <= LEK_AMBER_JUNGLE_RANGE then
+					nearJungle = true;
+				end
+			end
+		end
+		if nearJungle and (tt == TerrainTypes.TERRAIN_GRASS or tt == TerrainTypes.TERRAIN_PLAINS) then
 			p:SetFeatureType(FeatureTypes.FEATURE_JUNGLE, -1);
 		else
 			p:SetFeatureType(FeatureTypes.FEATURE_FOREST, -1);
