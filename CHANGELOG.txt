@@ -1,12 +1,12 @@
 # Lekmap Scion 1.0.0 (compared with Lekmap 5.2)
 
 ## Start placement
-- Players are placed by a slower process that evens out the distances between them: no extreme isolation, no extreme center spawns, and a nudge towards every player having two neighbours at a medium distance.
+- The distances between players are evened out: no extreme isolation, no extreme center spawns, and a nudge towards every player having two neighbours at a medium distance.
 - Every capital's second-closest neighbour is at most 15 tiles away, and at most 2 pairs of capitals sit at the minimum distance (no capital in both). If a map can't fit that, a new map is generated (up to 8 times).
 - Inland spawns have at most 4 salt-water tiles within 4 tiles.
 - Coastal spawns get a minimum amount of land close by (possibly as islands), and coastal players keep a larger minimum distance to each other than the default.
 - Coastal capitals have no water or mountains in the center-facing half of their first two rings.
-- Inland seas count for the start distance rules: capitals stay 4+ tiles from them, city-states never 1-2 tiles.
+- Inland seas count for the start distance rules: capitals stay 4+ tiles from them, city-states 3+ tiles.
 - No mountain next to a capital touches salt water (such mountains become hills).
 - At least 1 city-state is close-ish to each player.
 - City-state spots are better: no tiny land protrusions when coastal, fresh water where possible, extra strategic resources for city-states in the center of the map.
@@ -21,10 +21,10 @@
 - Luxury variety: a city-state shares its luxury with at most 1 of its 5 nearest city-states, and random luxuries avoid spots where 2+ of the 6 nearest luxuries are the same type.
 - Strategic resources are spread more evenly across the map; the guaranteed capital strategics are spread a bit more across the nearby land. Deposit sizes come from the mod.
 - Every capital gets these strategic resources around it (distance in tiles from the capital; when no fitting tile is free, a deposit may land one tile farther out):
-  - Iron: 9 within 2 tiles, plus small deposits of 3 (on flat land) at 4-5 and at 6-7 tiles
+  - Iron: 9 within 2 tiles, plus a small deposit of 3 (on flat land) at 6-7 tiles
   - Horses: 6 within 2 tiles, plus small deposits of 2 at 4-5 and at 6-7 tiles
   - Coal: 18 within 3 tiles
-  - Aluminum: 24 within 3 tiles
+  - Aluminum: 24 within 3 tiles, plus one deposit at 5-7 tiles, 24 or 12 (even chance); the map's other Aluminum is reduced by the same amount
   - Oil: 18 within 3 tiles, plus one deposit at 4-5 and one at 6-7 tiles, each 18 or 8 (even chance)
   - Uranium: 6 or 2 (even chance) at 3-5 tiles, plus 1 at 6-8 tiles
 

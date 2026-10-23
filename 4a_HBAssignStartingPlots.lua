@@ -859,8 +859,48 @@ function AssignStartingPlots.LekStratAuditRescanHorseIronFromMap(self, passLabel
 	self._lek_strat_audit_context = nil;
 end
 
+function AssignStartingPlots:LekStratSmallAluminumQty()
+	-- GetSmallStrategicResourceQuantityValues returns uranium, horse, oil, iron, coal, aluminum (see its comment)
+	local v = { self:GetSmallStrategicResourceQuantityValues() };
+	return v[6] or 3;
+end
+
+function AssignStartingPlots:LekStratTrimFarAluminum()
+	-- Removes random aluminum deposits more than 7 tiles from every capital until as many units are gone as the
+	-- second capital deposits added (rounding up to whole deposits).
+	local toRemove = self._lek_alum_band_units or 0;
+	if toRemove <= 0 then
+		return;
+	end
+	local iW, iH = Map.GetGridSize();
+	local cands = {};
+	for y = 0, iH - 1 do
+		for x = 0, iW - 1 do
+			local plot = Map.GetPlot(x, y);
+			if plot:GetResourceType(-1) == self.aluminum_ID and plot.GetNumResource
+				and self:LekStratMinDistanceToAnyMajorStart(x, y) > 7 then
+				cands[#cands + 1] = { x = x, y = y };
+			end
+		end
+	end
+	local removed = 0;
+	while removed < toRemove and #cands > 0 do
+		local i = Map.Rand(#cands, "Lekmap trim far aluminum - Lua") + 1;
+		local c = table.remove(cands, i);
+		local plot = Map.GetPlot(c.x, c.y);
+		local q = plot:GetNumResource();
+		plot:SetResourceType(-1);
+		self:LekStratDecrementPlacedAmounts(self.aluminum_ID, q);
+		removed = removed + (type(q) == "number" and q or 0);
+	end
+	LekMapgenPrintAndDiagFile("### LEK_STRAT_ALUM_TRIM runId=" .. tostring(_lek_run_id or "na")
+		.. " added=" .. tostring(toRemove) .. " removed=" .. tostring(removed));
+	self._lek_alum_band_units = 0;
+end
+
 function AssignStartingPlots:LekStratPostProcessForResourceSettingFive()
 	-- Volume = freqs only (no trim). Small iron flat = place-time (extras + small_strat); no strip.
+	self:LekStratTrimFarAluminum();
 	AssignStartingPlots.LekStratAuditReset(self);
 	AssignStartingPlots.LekStratAuditRescanHorseIronFromMap(self, "final_map_after_rs5_tune");
 end
@@ -1049,7 +1089,8 @@ function AssignStartingPlots:LekStratPlaceExtraBalanceSmallsForRegion(region_num
 			.. " iron_fallbackN=" .. tostring(table.maxn(iron_fallback))
 			.. " horse_primaryN=" .. tostring(table.maxn(horse_list))
 			.. " horse_fallbackN=" .. tostring(table.maxn(horse_fallback)));
-		if self:LekStratPlaceOneWithPrimaryFallback(
+		-- 2026-10-23 (user): no small iron at 4-5 tiles, only at 6-7
+		if dMin >= 6 and self:LekStratPlaceOneWithPrimaryFallback(
 			self.iron_ID, iron_small, iron_list, iron_fallback,
 			"extra_small:" .. tag .. "_iron:region=" .. tostring(region_number)) then
 			okN = okN + 1;
@@ -1062,7 +1103,7 @@ function AssignStartingPlots:LekStratPlaceExtraBalanceSmallsForRegion(region_num
 	end
 	LekMapgenPrintAndDiagFile("### LEK_STRAT_EXTRA_SMALLS region_done runId=" .. tostring(_lek_run_id or "na")
 		.. " region=" .. tostring(region_number)
-		.. " placed=" .. tostring(okN) .. "/4");
+		.. " placed=" .. tostring(okN) .. "/3");
 end
 
 function AssignStartingPlots:LekStratBuildOilListsForRingBand(x, y, dMin, dMax)
@@ -1133,6 +1174,78 @@ function AssignStartingPlots:LekStratBuildOilListsForRingBand(x, y, dMin, dMax)
 		end
 	end
 	return oil_list, oil_fallback;
+end
+
+function AssignStartingPlots:LekStratBuildAlumListsForRingBand(x, y, dMin, dMax)
+	-- Primary = hills and flat featureless land (not desert) and marsh inside the band; fallback = outer ring,
+	-- desert, forest, jungle, flood plains.
+	local iW, iH = Map.GetGridSize();
+	local wrapX = Map:IsWrapX();
+	local wrapY = Map:IsWrapY();
+	local odd = self.firstRingYIsOdd;
+	local even = self.firstRingYIsEven;
+	local alum_list, alum_fallback = {}, {};
+	for ripple_radius = dMin, dMax do
+		local currentX = x - ripple_radius;
+		local currentY = y;
+		for direction_index = 1, 6 do
+			for plot_to_handle = 1, ripple_radius do
+				local plot_adjustments;
+				if currentY / 2 > math.floor(currentY / 2) then
+					plot_adjustments = odd[direction_index];
+				else
+					plot_adjustments = even[direction_index];
+				end
+				local nextX = currentX + plot_adjustments[1];
+				local nextY = currentY + plot_adjustments[2];
+				if wrapX == false and (nextX < 0 or nextX >= iW) then
+				elseif wrapY == false and (nextY < 0 or nextY >= iH) then
+				else
+					local realX = nextX;
+					local realY = nextY;
+					if wrapX then
+						realX = realX % iW;
+					end
+					if wrapY then
+						realY = realY % iH;
+					end
+					local plot = Map.GetPlot(realX, realY);
+					local plotType = plot:GetPlotType();
+					local terrainType = plot:GetTerrainType();
+					local featureType = plot:GetFeatureType();
+					local plotIndex = realY * iW + realX + 1;
+					local inner = ripple_radius < dMax;
+					if plotType == PlotTypes.PLOT_HILLS then
+						if inner and featureType == FeatureTypes.NO_FEATURE then
+							table.insert(alum_list, plotIndex);
+						else
+							table.insert(alum_fallback, plotIndex);
+						end
+					elseif plotType == PlotTypes.PLOT_LAND then
+						if featureType == FeatureTypes.NO_FEATURE then
+							if inner and terrainType ~= TerrainTypes.TERRAIN_DESERT then
+								table.insert(alum_list, plotIndex);
+							else
+								table.insert(alum_fallback, plotIndex);
+							end
+						elseif featureType == FeatureTypes.FEATURE_MARSH then
+							if inner then
+								table.insert(alum_list, plotIndex);
+							else
+								table.insert(alum_fallback, plotIndex);
+							end
+						elseif featureType == FeatureTypes.FEATURE_FLOOD_PLAINS
+							or featureType == FeatureTypes.FEATURE_JUNGLE
+							or featureType == FeatureTypes.FEATURE_FOREST then
+							table.insert(alum_fallback, plotIndex);
+						end
+					end
+					currentX, currentY = nextX, nextY;
+				end
+			end
+		end
+	end
+	return alum_list, alum_fallback;
 end
 
 function AssignStartingPlots:LekStratBuildUranListsForRingBand(x, y, dMin, dMax)
@@ -1273,6 +1386,20 @@ function AssignStartingPlots:LekStratPlaceOuBandsForRegion(region_number)
 			"guaranteed_band:uran_r6-8_qty1:region=" .. tostring(region_number),
 			9, uran_band_impact_min, uran_band_impact_max) then
 			uranOk = uranOk + 1;
+		end
+	end
+
+	-- Aluminum (2026-10-23, user): a second deposit at 5-7 tiles, major or minor (even chance). The same amount
+	-- is taken off far-away aluminum afterwards (LekStratTrimFarAluminum), so the map total stays the same.
+	do
+		local _, _, _, _, _, alum_major = self:GetMajorStrategicResourceQuantityValues();
+		local alum_small = self:LekStratSmallAluminumQty();
+		local qty, szTag = self:LekStratPickMajorOrMinorQty(alum_major, alum_small);
+		local alum_list, alum_fallback = self:LekStratBuildAlumListsForRingBand(x, y, 5, 7);
+		if self:LekStratPlaceOneWithPrimaryFallback(
+			self.aluminum_ID, qty, alum_list, alum_fallback,
+			"guaranteed_band:alum_r5-7_" .. szTag .. ":region=" .. tostring(region_number)) then
+			self._lek_alum_band_units = (self._lek_alum_band_units or 0) + qty;
 		end
 	end
 
